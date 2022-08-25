@@ -1,0 +1,16 @@
+add_member:
+  -
+    {"userid": "aaa",
+    "name": "aaa",
+    "alias": "a",
+    "mobile": "+86 13811111111",
+    "position": "产品经理",
+    "gender": "1",
+    "email": "aaa@gzdev.com"}
+  -
+    {"userid": "bbb",
+    "name": "bbb",
+    "alias": "b",
+    "mobile": "+86 1382222222",
+    "gender": "2",
+    "email": "bbb@gzdev.com"}
