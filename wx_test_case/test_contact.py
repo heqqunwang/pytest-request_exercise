@@ -1,6 +1,6 @@
 import pytest
 
-from req_page.contact_page import ContactPage
+from wx_req_page.contact_page import ContactPage
 
 
 class TestContact:
