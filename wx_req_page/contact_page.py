@@ -1,6 +1,6 @@
 import requests
 
-from req_page.base import Base
+from wx_req_page.base import Base
 
 
 class ContactPage(Base):

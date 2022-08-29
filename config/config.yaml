@@ -1,0 +1,9 @@
+corpid:
+  mycorp:
+  corpsecret:
+
+
+dev:
+  base_url:""
+prod:
+  base_url:""

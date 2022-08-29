@@ -22,10 +22,18 @@ class Test_litemall:
 
 		# self.admin_token=r.jsonpath(r.json,'$..token')
 		#响应结果里获取token，便于后续传参
-		# user_url=""
-		# user_header = ""
-		# j=requests.post(url=user_url,headers=user_header)
-		# self.user_token=j.json()[1]
+	##用户端登录，获取用户端登录token
+		user_url="https://litemall.hogwarts.ceshiren.com/wx/auth/login"
+		user_data={
+			"username": "user123",
+			"password": "user123"
+			}
+
+		j=requests.post(url=user_url,json=user_data, proxies=self.proxies, verify=False)
+		self.user_token=j.json()["data"]["token"]
+
+
+
 	@pytest.mark.parametrize("goodsid,goodsname",yaml.safe_load(open("goods.yaml",encoding="UTF-8")))
 	def test_upload_goods(self,goodsid,goodsname):
 		##商品上架
@@ -49,55 +57,66 @@ class Test_litemall:
 			"products": [{
 				"id": 0,
 				"specifications": ["标准"],
-				"price": 0,
-				"number": 0,
+				"price": 1.5,
+				"number":100,
 				"url": ""
 			}],
 			"attributes": []
 		}
 
-		r=requests.post(url=url,headers={"X-Litemall-Admin-Token":self.admin_token},json=create_data,proxies=self.proxies,verify=False)
+		add_good_r=requests.post(url=url,headers={"X-Litemall-Admin-Token":self.admin_token},json=create_data,proxies=self.proxies,verify=False)
 		##注意这里headers是字典，要用冒号
-		assert r.json()["errmsg"]=='成功'
-	def test_query_goods_list(self):
-		##查询商品列表
-		query_url = "https://litemall.hogwarts.ceshiren.com/admin/goods/list?page=1&limit=20&sort=add_time&order=desc"
 
-		r = requests.get(url=query_url, headers={"X-Litemall-Admin-Token": self.admin_token},
+
+		##查询后台商品
+		query_url = "https://litemall.hogwarts.ceshiren.com/admin/goods/list"
+		goods_data={"name":{goodsname},"order":"desc","sort":"add_time"}
+		r = requests.get(url=query_url, params=goods_data,headers={"X-Litemall-Admin-Token": self.admin_token},
 		                  proxies=self.proxies, verify=False)
 		##注意这里headers是字典，要用冒号
-		assert r.json()["errmsg"] == '成功'
+		##返回第一个商品的商品id
+		# return r.json()["data"]["list"]["id"][0]
+		print("获取到goods_id是：")
+		print(r.json()["data"]["list"][0]["id"])##后面商品商详，删除，编辑都需要用到商品goods_id
+		self.goods_id=r.json()["data"]["list"][0]["id"]
 
-	@pytest.mark.parametrize("goodsid,goodsname", yaml.safe_load(open("goods.yaml", encoding="UTF-8")))
-	def delete_goods(self,goodsid,goodsname):
+
+		##查看用户端商品详情，获得商品product_id
+		user_goods_detail = f"https://litemall.hogwarts.ceshiren.com/wx/goods/detail?id={self.goods_id}"
+		# user_goods_detail = f"https://litemall.hogwarts.ceshiren.com/wx/goods/detail?id=1181827"
+		r = requests.get(url=user_goods_detail, headers={"X-Litemall-Token": self.user_token},
+		                 proxies=self.proxies, verify=False)
+		self.product_id = r.json()["data"]["productList"][0]["id"]
+		print(self.product_id)
+
+		##用户端加入购物车
+
+		add_cart_url = "https://litemall.hogwarts.ceshiren.com/wx/cart/add"
+		data = {
+			"goodsId": self.goods_id,
+			"number": 1,
+			"productId": self.product_id
+		}
+		requests.post(url=add_cart_url, json=data, headers={"X-Litemall-Token": self.user_token},
+		              proxies=self.proxies, verify=False)
+
+		#===============删除商品
 		delete_url = "https://litemall.hogwarts.ceshiren.com/admin/goods/delete"
 		delete_data={
-			"id": 1181493,
-			"goodsSn": f"{goodsid}",
-			"name": f"{goodsname}",
-			"categoryId": 0,
-			"brandId": 0,
-			"gallery": [],
-			"keywords": "",
-			"brief": "",
-			"isOnSale": True,
-			"sortOrder": 100,
-			"picUrl": "",
-			"isNew": True,
-			"isHot": False,
-			"unit": "’件‘",
-			"counterPrice": 15,
-			"retailPrice": 0,
-			"addTime": "2022-08-19 03:18:28",
-			"updateTime": "2022-08-19 03:18:28",
-			"deleted": False,
-			"preview": [""]
+			"id": self.goods_id
 		}
 
-		r = requests.get(url=delete_url, headers={"X-Litemall-Admin-Token": self.admin_token},json=delete_data,
+		r = requests.post(url=delete_url, headers={"X-Litemall-Admin-Token": self.admin_token},json=delete_data,
 		                  proxies=self.proxies, verify=False)
-		##注意这里headers是字典，要用冒号
-		assert r.json()["errmsg"] == '成功'
+		# ##注意这里headers是字典，要用冒号
+
+#======	##用户页地址为https://litemall.hogwarts.ceshiren.com/vue/index.html#/
+
+
+
+
+
+
 
 
 
