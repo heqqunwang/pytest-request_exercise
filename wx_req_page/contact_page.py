@@ -4,17 +4,18 @@ from wx_req_page.base import Base
 
 
 class ContactPage(Base):
-   def find_member(self,access_token,userid:str):
+   def find_member(self,userid:str):
       ##查找成员
-      get_member_url = f"https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token={access_token}&userod={userid}"
-      r = requests.get(get_member_url)
-      print(r.json())
-      return r.json()["errcode"]
+      get_member_url = "cgi-bin/user/get"
+      get_member_data={"access_token":self.access_token,"userid":userid}
+      r=self.send(method="get",url=get_member_url,params=get_member_data)
+      return r["errcode"]
 
 
-   def add_member(self,access_token,userid,name,alias,mobile,**kwargs):
+   def add_member(self,userid,name,alias,mobile,**kwargs):
       ##新增成员
-      add_member_url = f"https://qyapi.weixin.qq.com/cgi-bin/user/create?access_token={access_token}"
+      add_member_url = "cgi-bin/user/create"
+      p={"access_token":self.access_token}
       data = {
 
          "userid": userid,
@@ -23,37 +24,35 @@ class ContactPage(Base):
          "mobile": mobile,
       }
       data.update(kwargs)
-      r = requests.post(url=add_member_url, json=data)
-      print(r.json())
-      return r.json()["errcode"]
+      r = self.send(method="post",url=add_member_url, json=data,params=p)
       # try:
-      #    assert r.json()['errcode'] =="0"
+      #    assert 0 == r['errcode']
       # except Exception:
-      #    print("添加失败")
+      #    print("删除失败")
 
-   def delete_member(self,access_token,userid):
+
+
+   def delete_member(self,userid):
       ##删除成员
-      params={"userid":userid}
-      delete_member_url = f"https://qyapi.weixin.qq.com/cgi-bin/user/delete?access_token={access_token}&={userid}"
-      #proxies={"https":"127.0.0.1:8888"},通过代理监听请求发出去的情况
-      r = requests.get(delete_member_url,params)
-      #r = requests.get(delete_member_url,proxies=proxies,verify=False)
+      params={"access_token":self.access_token,"userid":userid}
+      delete_member_url = "cgi-bin/user/delete"
+      r = self.send(method="get",url=delete_member_url,params=params)
       try:
-         assert 0 == r.json()['errcode']
+         assert 0 == r['errcode']
       except Exception:
          print("删除失败")
 
-   def update_member(self,access_token,userid,name,mobile,**kwargs):
+   def update_member(self,userid,name,mobile,**kwargs):
       ##编辑更新成员
-      update_member_url = f"https://qyapi.weixin.qq.com/cgi-bin/user/update?access_token={access_token}"
+      update_member_url = "cgi-bin/user/update"
+      p = {"access_token": self.access_token}
       data = {
          "userid": userid,
          "name": name,
          "mobile": mobile
 
       }
-      r = requests.post(url=update_member_url, json=data)
-      print(r.json())
+      r = self.send(method="post",url=update_member_url, json=data,params=p)
 
-      return r.json()["errcode"]
+      return r["errcode"]
 

@@ -5,10 +5,8 @@ from wx_req_page.contact_page import ContactPage
 
 class TestContact:
     def setup_class(self):
-
-
         self.contact=ContactPage
-        self.contact.get_token(self,"ww99eaf6cddda35ee6","jNN55_k4HpZcXxbr6RGrfKT9Cvs3ZUG-LlYa4t5HZ1w")
+        self.contact.get_token("ww99eaf6cddda35ee6","jNN55_k4HpZcXxbr6RGrfKT9Cvs3ZUG-LlYa4t5HZ1w")
 
 
     # @pytest.mark.parametrize("corpid,corpsecret,result",[("ww99eaf6cddda35ee6","jNN55_k4HpZcXxbr6RGrfKT9Cvs3ZUG-LlYa4t5HZ1w",0)])
@@ -18,7 +16,7 @@ class TestContact:
     #     assert  r.get("errcode")==result
 
     def test_find_member(self):
-        r=self.contact.find_member(self,self.access_token,"liuyi12")
+        r=self.contact.find_member(self.access_token,"liuyi12")
         # assert r=="0"
 
     def test_add_member(self):##测试添加接口

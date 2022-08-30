@@ -53,7 +53,7 @@ class BaseApi:
 
 
 	def send(self,method,url,**kwargs):
-		kwargs=self.__set_token(kwargs)
+		kwargs=self.__set_token(kwargs)##将token塞入到kwargs里
 		send_result=requests.request(method,url=self.base_url+url,**kwargs,proxies=self.proxies,verify=False)
 		# logger.debug(f"{url}响应为{r.json()}")
 		logger.debug(f"{self.base_url+url}响应为{send_result.json()}")
