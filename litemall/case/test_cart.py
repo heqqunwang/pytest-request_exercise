@@ -1,4 +1,7 @@
+import os
+
 import pytest
+import yaml
 
 from litemall.apis.carts import Carts
 from litemall.apis.goods import Goods
@@ -6,8 +9,10 @@ class TestCarts:
 
 
 	def setup_class(self):
-		self.base_admin_url="https://litemall.hogwarts.ceshiren.com"
-		self.base_user_url="https://litemall.hogwarts.ceshiren.com"
+		env_path = os.getenv("interface_env", default="litemall_env_cofig_release")
+		base_url=yaml.safe_load(open(f"../../config/{env_path}.yaml",encoding="utf-8"))
+		self.base_admin_url=base_url["base_url"]
+		self.base_user_url=base_url["base_url"]
 		self.goods=Goods(self.base_admin_url,"admin")##测试用例示例化，可以在测试用例里调用api的接口
 		self.cart=Carts(self.base_user_url,"user")
 

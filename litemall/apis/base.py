@@ -8,9 +8,9 @@ class BaseApi:
 
 	def __init__(self,base_url,role=None):
 		##构造函数，实例化得时候需要得参数
-		self.proxies = {
-			'http': "http://127.0.0.1:8888",
-			'https': "http://127.0.0.1:8888"}
+		# self.proxies = {
+		# 	'http': "http://127.0.0.1:8888",
+		# 	'https': "http://127.0.0.1:8888"}
 		self.base_url=base_url
 		if role:
 			self.role=role
@@ -23,7 +23,8 @@ class BaseApi:
 			"password": "admin123",
 			"code": ""
 		}
-		admin_r = requests.post(url=self.base_url+admin_url, json=admin_data,proxies=self.proxies,verify=False)
+		# admin_r = requests.post(url=self.base_url+admin_url, json=admin_data,proxies=self.proxies,verify=False)
+		admin_r = requests.post(url=self.base_url + admin_url, json=admin_data)
 		self.admin_token = {"X-Litemall-Admin-Token":admin_r.json()["data"]["token"]}
 
 		##用户端登录，获取用户端登录token
@@ -32,7 +33,7 @@ class BaseApi:
 			"username": "user123",
 			"password": "user123"
 		}
-		user_r =requests.post(url="https://litemall.hogwarts.ceshiren.com/wx/auth/login",json=user_data,proxies=self.proxies,verify=False)
+		user_r =requests.post(url="https://litemall.hogwarts.ceshiren.com/wx/auth/login",json=user_data)
 		self.user_token ={"X-Litemall-Token":user_r.json()["data"]["token"]}
 
 
@@ -54,7 +55,7 @@ class BaseApi:
 
 	def send(self,method,url,**kwargs):
 		kwargs=self.__set_token(kwargs)##将token塞入到kwargs里
-		send_result=requests.request(method,url=self.base_url+url,**kwargs,proxies=self.proxies,verify=False)
+		send_result=requests.request(method,url=self.base_url+url,**kwargs)
 		# logger.debug(f"{url}响应为{r.json()}")
 		logger.debug(f"{self.base_url+url}响应为{send_result.json()}")
 		return send_result.json()
