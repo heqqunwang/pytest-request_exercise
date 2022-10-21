@@ -9,3 +9,4 @@ def test_get_login_jsonschema():
 	data=requests.get(url,params={'limit':'2'}).json()
 	schema=json.load(open("topic_schema.json"))
 	validate(data,schema=schema)
+
