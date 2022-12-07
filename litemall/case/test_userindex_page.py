@@ -1,11 +1,11 @@
 import os
 
+import pytest
 import yaml
-
 
 from litemall.apis.users_index import UserIndex
 
-
+@pytest.mark.indexquery
 class TestUserIndex():##注意类名要以Test开头，不需要集成baseapi类
 	def setup_class(self):
 		env_path = os.getenv("interface_env", default="litemall_env_cofig_release")
@@ -40,13 +40,16 @@ class TestUserIndex():##注意类名要以Test开头，不需要集成baseapi类
 		assert result == "成功"
 
 	def test_publish_new(self):
+		##测试新品首发接口
 		result=self.userindex.publish_new()
 		assert result == "成功"
 
 	def test_recommend(self):
+		##测试人气推荐
 		result=self.userindex.recommend()
 		assert result == "成功"
 
 	def test_topics(self):
+		##测试人气精选接口
 		result=self.userindex.topics()
 		assert result == "成功"

@@ -1,6 +1,3 @@
-import json
-
-from jsonpath import jsonpath
 
 from litemall.apis.base import BaseApi
 

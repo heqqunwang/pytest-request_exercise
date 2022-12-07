@@ -22,8 +22,8 @@ class BaseApi:
 		##管理后台登录：token获取
 		admin_url = "/admin/auth/login"
 		admin_data = {
-			"username": "admin123",
-			"password": "admin123",
+			"username": "hogwarts",
+			"password": "test12345",
 			"code": ""
 		}
 		# admin_r = requests.post(url=self.base_url+admin_url, json=admin_data,proxies=self.proxies,verify=False)
@@ -62,7 +62,7 @@ class BaseApi:
 		kwargs=self.__set_token(kwargs)##将token塞入到kwargs里
 		send_result=requests.request(method,url=self.base_url+url,**kwargs)
 		# logger.debug(f"{url}响应为{r.json()}")
-
+		print(f"{self.base_url + url},请求体为{kwargs}")
 		print(f"{self.base_url + url}请求响应为{json.dumps(send_result.json(), ensure_ascii=False, indent=2)}")##控制台打印请求与返回信息，便于查阅问题
 
 		logger.debug(f"{self.base_url+url}响应为{send_result.json()}")##在send方法里封装log信息，就不用单独在每个接口里添加了
